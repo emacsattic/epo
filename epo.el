@@ -2,7 +2,7 @@
 ;;; Editing Process Organizer
 ;;; epo.el rev. 1.4h
 ;;; (c)1999-2003 by HIROSE Yuuji [yuuji@ae.keio.ac.jp]
-;;; Last modified Sun Mar 30 16:46:13 2003 on firestorm
+;;; Last modified Sun Mar 30 20:56:34 2003 on firestorm
 
 (defconst epo-revision-number "1.4h")
 ;;	
@@ -295,6 +295,8 @@ Each element looks like (REGEXP . LANGNAME).")
 	      (progn
 		(set-marker (get-register (aref regs n)) mp mb)
 		(setq alive (cons (aref regs n) alive)))
+	    (or (markerp (get-register (aref regs n)))
+		(set-register (aref regs n) (make-marker)))
 	    (set-marker (get-register (aref regs n)) nil))
 	  (setq n (1- n)))
 	(or (markerp (get-register top))
