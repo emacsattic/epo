@@ -2,7 +2,7 @@
 ;;; EPO Ant dependent settings
 ;;; (c) 2001-2002 by Toshikazu Ando <ando@park.ruru.ne.jp>
 ;;; Created: 2001 Aug 11
-;;; $Lastupdate: Mon Aug 05 19:00:09 2002 $ on inspire.
+;;; $Lastupdate: Sat Dec 21 23:30:48 2002 $ on inspire.
 
 (require 'epo-xml)
 ;;[Commentary]
@@ -64,7 +64,7 @@
     (save-excursion
       (goto-char (point-min))
       (while (re-search-forward
-	      "<target\\s +name\\s *=\\s *\"\\([-_A-Za-z0-9]+\\)\"" nil t)
+	      "<target\\s +name\\s *=\\s *\"\\([-_.A-Za-z0-9]+\\)\"" nil t)
 	(setq word (buffer-substring (match-beginning 1) (match-end 1)))
 	(if (not (assoc word word-alist))
 	    (setq word-alist (cons (list word) word-alist)))))
