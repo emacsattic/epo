@@ -1,0 +1,3 @@
+#!/usr/bin/env ruby
+[Array, Data, Dir, Hash, File, Integer, Proc, Struct, String, Time, Kernel].\
+each {|x| x.methods.each{|y| print y, "\n"}}

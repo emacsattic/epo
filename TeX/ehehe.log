@@ -1,0 +1,29 @@
+This is pTeX, C Version 2.99 j1.7 p1.0.9F (preloaded format=jlplain 92.12.12)  11 DEC 2000 20:49
+**&jlplain ehehe
+(ehehe.tex
+LaTeX Version 2.09 <24 May 1989>
+(/usr/local/lib/tex/macros/jbook.sty
+Document Style `jbook'. <18 Dec 88>
+(/usr/local/lib/tex/macros/jbk10.sty)
+\descriptionmargin=\dimen99
+\c@part=\count78
+\c@chapter=\count79
+\c@section=\count80
+\c@subsection=\count81
+\c@subsubsection=\count82
+\c@paragraph=\count83
+\c@subparagraph=\count84
+\c@figure=\count85
+\c@table=\count86
+) (ehehe.aux (ch-1.aux) (ch-2.aux))
+Chapter 1.
+[1
+
+
+] (ch-1.tex) [2
+
+] (ch-2.tex
+! Undefined control sequence.
+l.4 ...その2で、ch-2.tex に書いて)あります。\ogeds
+                                                   な
+? 

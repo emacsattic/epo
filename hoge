@@ -1,0 +1,118 @@
+
+
+(epo*fgrep-l "epop" "." ".el")
+("/home/yuuji/work/dthesis/emg/EPO/epo.el" "/home/yuuji/work/dthesis/emg/EPO/epop.el")
+(append '(1) nil)
+(1)
+(epo*all-dirs ".")
+("." "./C" "./HTML" "./Java" "./Perl" "./RCS" "./Ruby" "./TeX")
+
+("." "./C" "./Java" "./Perl" "./Ruby" "./TeX" "./HTML" "./RCS")
+(epo*all-dirs "/usr/X11R6/include")
+(epo*all-dirs "/usr/local/emacs21")
+
+(setq default-directory ".")
+"."
+
+(setq foo (epo*process-runner
+	   'rewind "find . -type d -print"
+	   nil '(lambda (s) (and (string< "" (file-directory-p s))))))
+
+
+
+(funcall foo 'next)
+(setq foo (epo*dir-lister "."))
+(funcall foo 'next)
+
+(setq epo*all-dirs-use-find t)
+(epo*kill-temp-buffers)
+(let ((l (epo*dir-lister "/usr/X11R6/include/X11/")) e)
+  (insert (prin1-to-string l) "\n")
+  ;;(sit-for 0.5)
+  (while (setq e (funcall l 'next))
+    (insert e " ")))
+(lambda (method) (epo*lister method "/usr/X11R6/include/X11/"))
+
+foo
+epo*process-runner-object
+
+
+epo*lister-object
+(catch 'foo
+  (setq foo 1)
+  (unwind-protect
+      (throw 'foo t)
+    (setq foo 3)))
+t
+foo
+3
+(epo*coco-re-search-all-files "epo" '("defn epo\\*restore") '("."))
+(setq foo epo-java-structure-alist
+(epo*fgrep-l "epo-java-structure-alist" "." ".el")
+load-path
+last-command
+((id . 0))
+'(reference ref keyword {pattern|method})
+method := 'file | 'process | 'function
+(epo*find-file "epo-java.el" load-path)
+(require 'font-lock)
+(require 'epo-java)
+partner (or (car (cdr (assq (car (cdr (cdr (cdr x)))) relbak))) ; too complex!  Can you see boy?:)
+foo
+(mapcar 'purecopy '(1 2 nil 3 4))
+[?\C-\ ]
+post-command-hook
+(win:title-mode-line-updater2 overwrite-mode-post-command-hook)
+(cond
+ (case-fold-search))
+ (epor*
+(defun foo () 5)
+(setq foo
+      '("\\(\\$\\|@\\)\\<\\([A-z_]+\\)"
+	(or ((after . "="))
+	    ((before . "\\<\\(local\\|my\\)\\>")))))
+(setq foo
+      '("\\(\\$\\|@\\)\\<\\([A-z_]+\\)[ \t]*="))
+
+(apply 'foo nil)
+5
+(call-interactively 'undefined)
+nil
+(character-to-event)
+(get 'epor*on-relation-p 'matched-relation)
+(end (pattern "\\\\end{\\(%i\\)}") (group . 1))
+
+(functionref1 (pattern "(\\(%i\\)\\>") (group . 1) (partner . defuns))
+
+((id . 0))
+
+(setq foo nil)
+(funcall foo 'delete)
+((id . 12))
+
+
+(let ((cb (current-buffer)))
+  (setq bar (list 'lambda '()
+		  (list 'let (list (list 'b cb))
+			'(switch-to-buffer b)))))
+(lambda nil (let ((b #<buffer hoge>)) (switch-to-buffer b)))
+(funcall bar)
+#<buffer hoge>
+(length load-path)
+67
+;;in epor*on-relation-p after
+;; (put 'epor*on-relation-p 'matched-type (car list))
+(if (listp group)
+    (let ((grp group))
+      (while grp
+	(if (match-beginning (car grp))
+	    (setq group (car grp)
+		  grp nil))
+	(setq grp (cdr grp)))
+      (setq group (or group 0))))
+(let (localvars)
+  (try-completion "rel" obarray 'boundp))
+nil
+(try-completion "rel" obarray)
+"rel"
+

@@ -1,0 +1,33 @@
+Copyright 1999-2001 HIROSE, Yuuji
+
+This software is copyrighted by HIROSE Yuuji [yuuji@yatex.org] who is
+original author of epo. The author is not responsible for the consequences 
+of use of this software, no matter how awful, even if they arise from flaws 
+in it.
+
+You can use this software with no-fee. You can redistribute unmodified
+pacakge (which is available at http://www.yatex.org/epo/) freely.
+
+Basically, you can modify this software freely. For personal use or
+redistribute to acquaintance, you can modify freely. The other case,
+redistribution source and binary with modifcation are permitted
+provided that the following conditions:
+
+   * you modify about OS specific install path and redistribute epo as
+     part of operating system.
+
+   * you notice modification to author and you are allowed
+     redistribution by author.
+
+   * you can distribute epo as different package name when 
+     you add excessive function to epo.
+
+   * distribute only a patch which is depend on person's taste.
+
+   * distribute elisp file which define language information to edit 
+     for epo. (In this case, that language information parameters'
+     copyright belongs to the author of parameters.)
+
+Even if you are qualified above any conditions, don't remove original
+copyright which is written in this pacakge. And you must write a log
+where you modify in code.

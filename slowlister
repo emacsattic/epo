@@ -1,0 +1,6 @@
+#!/bin/sh
+for d in `find $1 -type d -print`
+do
+	echo $d
+	sleep 1
+done

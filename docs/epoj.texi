@@ -1,0 +1,1068 @@
+\def\lang{jp} % -*- texinfo -*-
+\input texinfo
+@setfilename epoj
+@settitle The Editing Process Organizer - EPO
+
+@iftex
+@c @syncodeindex fn cp
+@c いつも忘れるのでここに書いとくか。
+@c C-l C-c n でノード入れ
+@c ノードいじったら C-l C-u C-n 全部のノード更新 C-l C-u C-e
+@c メニュー増やしたら C-l C-u C-m 全部のメニュー更新 C-l C-u C-a
+@c フォーマットするときは C-l C-e C-b
+@c Last modified Mon Feb  4 19:28:48 2002 on balius
+@syncodeindex vr cp
+@end iftex
+
+@titlepage
+@sp 10
+@center
+@subtitle Editing Process Orgganizer
+@title EPO
+@author @copyright{} 1999-2001 by    HIROSE, Yuuji [yuuji@@ae.keio.ac.jp]
+@end titlepage
+@set EPOURL http://www.yatex.org/epo/
+
+@node Top, Intro, (dir), (dir)
+@comment  node-name,  next,  previous,  up
+@menu
+* Intro::                       始めに
+* Terminology::                 本マニュアル参照上の注意
+* Main features::               主な機能
+* Installation::                インストール
+* Input Aider::                 構造の補完入力
+* Resolving Relations::         関係の解決
+* Changing elemnts of relation::  関係要素の変更
+* Processor Invocation::        言語処理系の起動
+* Teaching EPO a new language::  EPOに新しい言語を教える
+* Customizations::              カスタマイズ
+* Copying::                     本ソフトウェアの取り扱い
+* Concept Index::               索引
+@end menu
+
+@node Intro, Terminology, Top, Top
+@comment  node-name,  next,  previous,  up
+@chapter はじめに
+@cindex Emacs
+@cindex TeX
+@cindex LaTeX
+@cindex やちょう[やちよう]
+@cindex 言語[けんこ]
+@cindex 補完[ほかん]
+@cindex 環境[かんきよう]
+
+EPOは Emacs で、プログラミング言語やマークアップ言語(HTMLなど)を編集する
+ときに、どんなモードでも統一的なインタフェースにて
+
+@itemize @bullet
+@item 定型構造の補完入力
+@item 既入力定型構造の修正
+@item 特定環境内固有のイテレータ(<LI>など)の自動判定入力
+@item コンパイラorタイプセッタor文法チェッカ などの起動とエラー箇所ジャンプ
+@item 識別子(関数/変数/ラベル)の追跡や定義の生成
+@item 識別子の補完入力
+@item 関連外部プロセスの自動起動
+@item ファイルのリンク(include, hrefなど)の追跡
+@end itemize
+
+@noindent
+を可能にし、あらゆる言語の入力/修正作業の労力を軽減してくれるマイナーモー
+ドです。
+
+もしあなたが、La@TeX{}用の入力支援環境である『野鳥』や、HTML用の入力支援
+環境である『HTML屋』(いずれも http://www.yatex.org/) を利用したことがあ
+れば話は早いでしょう。EPOは「どこでも野鳥」な環境を提供します。
+
+なお、EPOは以下のEmacsで動作することを期待して作られています。
+
+@itemize
+ @item Mule2 (emacs-19)
+ @item Emacs 20.x
+ @item Emacs 21.x
+ @item XEmacs 21.x
+@end itemize
+
+@noindent
+(可能なら xyzzy で動かして頂けないかと強く望んでいます…)
+
+@node Terminology, Main features, Intro, Top
+@comment  node-name,  next,  previous,  up
+@chapter 本マニュアル参照上の注意
+@cindex ソース[そおす]
+@cindex 言語[けんこ]
+@cindex 箱[はこ]
+@cindex 反復子[はんふくし]
+@cindex 関係[かんけい]
+
+本マニュアルでは以下の用語を使用します。
+
+@itemize @bullet
+@item ソース
+
+プログラミング言語や、マークアップ言語を利用して人間が記述する、成果物の
+元となるファイルのこと。
+
+@item 言語
+
+プログラミング言語、マークアップ言語のみを指すものとします。
+
+@item 箱
+
+La@TeX{}でいえば @code{\begin{foo}...\end{foo}} のように、HTMLでいえば
+@code{<bar>...</bar>}のように、開始記号と終了記号により文書内の特定の領
+域を囲むような構造を持つ場合、その囲まれた領域のことを「箱」と呼びます。
+
+@item 反復子
+
+ある特定の「箱」の中で、その箱固有のものが繰り返し現れるような文法である
+とき、箱の中で何度も現れるものを反復子と呼びます。La@TeX{}でいえば 
+itemize 環境という箱の中では @code{\item} という記号を繰り返し利用します。
+また、HTMLでは @code{<UL>...</UL>} で囲まれた箱の中では、@code{<LI>} と
+いう記号を繰り返し利用します。これらはいずれも反復子です。プログラミング
+言語ではこのような構造を持つものはあまりありませんが、強いていえば
+@code{swtich〜case}構文の中で利用する @code{case} ラベルがこれに当たりま
+す。
+
+@item 関係
+
+ソース中に現れるある文字列が、それ以外の場所、または他所で定められたもの
+を指し示すとき、指し示す方と示される方両者には「関係」がある、といいます。
+たとえばプログラミング言語においては、関数(メソッド)/変数はどこか一箇所
+で定義したものを別箇所で利用しますが、それも「関係」です。また、La@TeX{} 
+では何かの番号を@code{\label}で定義し、別箇所で@code{\ref}で参照します。
+これも「関係」です。さらにまたHTMLでは、@code{<a href="file">...</a>} に
+よってリンク先のファイルを指し示しますがこれも「関係」です。
+
+もうひとつ、先述の箱において、箱の開始と終了を指示する記号が必ず存在しま
+すが、これらも片方からもう片方が定まるので、一種の「関係」です。
+
+@item 識別子
+
+一意性を確保された、ある単語によってソース中の二点が関連づけられる場合、そ
+の単語のことを識別子と呼びます。具体的には、プログラミング言語では変数名や
+関数名が、マークアップ言語ではラベル名などがこれに相当します。
+
+@item @kbd{[prefix]}
+
+EPOの機能を起動するためのプリフィクスキー。デフォルトでは@kbd{C-c}に割り
+当てられているので、特に変更していない場合本マニュアルの @kbd{[prefix]} と
+いう表記は、@kbd{C-c} と読み換えてください。
+@end itemize
+
+@node Main features, Installation, Terminology, Top
+@comment  node-name,  next,  previous,  up
+@chapter 特長と主な機能
+@cindex 特長[とくちよう]
+@cindex 機能[きのう]
+@cindex 支援[しえん]
+
+EPOは一般的なプログラミング言語/マークアップ言語に共通に備わっている性質
+に着目し、それを人間が入力/修正するときにコンピュータが自分で判断して手
+助けできるいくつかの作業の「手順」だけを知っています。しかしその「手順」
+をHTMLやPerl言語などでどう適用したらいいのか知りません。支援手順をHTML文
+書編集に適用させるためには、HTMLの文法によって決まる手順適用指令を書く必要
+があります。
+
+しかし安心して下さい。標準では HTML, La@TeX{}, C, Emacs-Lisp, Java, Perl,
+Ruby,Ant, C#, geml, gsml, CORBA/IDL, RELAX, Xi, XML, XSLT の手順適用書が用
+意されていますから、もし利用する言語がそれらの中にあればすぐにEPOによる支
+援を得ることが出来ます。
+
+もし、上記のリストに利用したい言語が含まれない場合も諦める必要はありません。
+手順適用指令は @var{epo-言語名-はたらき-alist} という風の名前の変数を4〜5
+個定義するだけでいいのです。これらの定義は、@file{epo-*.el} にマッチするファ
+イルに書かれているので、似た言語のものを参考にすると良いでしょう。
+
+EPOは以下の支援機能を知っています。
+
+@itemize @bullet
+@item コンパイラやタイプセッタの編集画面からの起動 (@kbd{[prefix] C-t})
+@item コンパイル/タイプセット/実行時のエラー発生行へのジャンプ
+	(@kbd{[prefix] '})
+@item 既入力構文の変更(補完つき) (@kbd{[prefix] C-c})
+@item 反復子の自動判定入力 (@kbd{[prefix] C-i}, @kbd{M-RET})
+@item 言語固有の構文の補完入力 (@kbd{[prefix] C-s})
+@item 識別子定義←→識別子参照間ジャンプ (@kbd{[prefix] C-r})
+@item 未定義識別子の定義テンプレートの生成 (@kbd{[prefix] C-r})
+@item 参照ファイル間ジャンプ (@kbd{[prefix] C-r})
+@item 既入力構文の修正(補完付き) (@kbd{[prefix] C-c})
+@item 参照ファイル名の変更 (@kbd{[prefix] C-c})
+@item 識別子の補完 (@kbd{[prefix] C-@@})
+@end itemize
+
+識別子の定義箇所検索では、関係しそうなディレクトリ全てのソースファイルを検
+索するので、多数のソースファイルに分割している場合でもほぼ確実に定義箇所を
+探し出します。どんな言語でも識別子の利用(参照)が重要な意味を持つので、とく
+に @kbd{[prefix] C-r} の機能は有用です。
+
+@node Installation, Input Aider, Main features, Top
+@comment  node-name,  next,  previous,  up
+@chapter 導入
+@cindex 導入[とうにゆう]
+@cindex インストール[いんすとおる]
+@cindex 組み込み[くみこみ]
+@cindex .emacs
+@cindex ~/.emacs
+
+ここでは既に利用している言語がEPOのデフォルト配布セットに入っている場合を
+前提にして説明します。デフォルト配布セットに無い言語でEPOを使いたい場合の
+設定のしかたについては @xref{Teaching EPO a new language} を参照して下さい。
+
+@menu
+* Package Extraction::          パッケージの展開とインストール
+* Startup File::                初期化ファイルの設定
+@end menu
+
+@node Package Extraction, Startup File, Installation, Installation
+@comment  node-name,  next,  previous,  up
+@section 配布ファイルのインストール
+
+@value{EPOURL}より最新版のEPOを入手します。アーカイブは
+@file{epo-バージョン番号.tar.gz} という名前になっています。これを適当な場
+所に展開します。Unixを利用している場合や、WindowsにCygwinなどを利用してい
+る場合はmakeがインストール作業を肩代りします。
+
+@file{makefile}にある
+
+@example
+PREFIX	= /usr/local
+## mule2
+EMACS	= mule
+EMACSDIR= ${PREFIX}/lib/${EMACS}
+## emacs20
+#EMACS	= emacs
+#EMACSDIR= ${PREFIX}/share/${EMACS}
+## XEmacs
+#EMACS	= xemacs
+#EMACSDIR= ${PREFIX}/lib/${EMACS}
+## Meadow (Sample)
+#EMACS	= meadow
+#EMACSDIR = c:/usr/local/meadow
+@end example
+
+という行を自身の環境に合わせて変更し、
+
+@example
+% make install
+@end example
+
+により必要なファイルのコピーが終了します。もし、makeが利用できない場合は、
+以下の方針に従いファイルをコピーして下さい。
+
+@itemize @bullet
+@item Emacs-Lispファイル(*.elで終わるもの)
+
+Emacsのインストールディレクトリ配下にある site-lisp/ ディレクトリに epo/
+というディレクトリを作成し、そこにコピーします。
+
+@item Infoファイル
+
+配布パッケージ中の manual/epoj というファイルを Emacsのインストールディレ
+クトリ配下にある info/ ディレクトリにコピーし、さらに manual/dir ファイル
+にある行を Emacs の info/dir ファイルに追加します。
+@end itemize
+
+@node Startup File,  , Package Extraction, Installation
+@comment  node-name,  next,  previous,  up
+@section @file{.emacs}への記述
+
+ファイルのインストールが終わったら、Emacsの初期化ファイルにEPOの設定を追加
+します。
+
+@example
+(autoload 'epo "epo" "Editing Process Organizer" t)
+@end example
+
+もし、利用している Emacs が Version 19(mule2) である場合はさらに次の記述を
+追加します。
+
+@example
+(setq load-path (cons "/usr/local/lib/mule/site-lisp/epo" load-path))
+@end example
+
+以上により EPO の起動準備は完了です。普段利用している言語のソースを編集す
+るときに
+
+@example
+@kbd{M-x epo}
+@end example
+
+とタイプすればその編集バッファでEPOの編集支援を得られるようになります。も
+し、ファイルを開くと共に自動的にEPOが立ち上がって欲しい場合は利用する言語
+のメジャーモードのhookに登録します。たとえば、Ruby言語ソースを編集する場合、
+メジャーモードは ruby-mode なので、@file{~/.emacs} に以下のように書きます。
+
+@example
+(add-hook 'ruby-mode-hook 'epo)
+@end example
+
+ほとんどのメジャーモードでは、そのメジャーモードの初期化が終わったときに走
+らせるhookを用意していていて、その名前は「メジャーモード名-hook」のように
+なっていますから、これにたいして @code{add-hook} を行うと良いでしょう。
+
+@node Input Aider, Resolving Relations, Installation, Top
+@comment  node-name,  next,  previous,  up}
+@chapter ソース入力の支援
+@cindex 入力支援[にゆうりよくしえん]
+
+多くの言語では、その言語特有の文法規則により定まる定型的な構文を記述する事
+があります。代表的なものとしてはLa@TeX{}における@code{\begin@{foo@}}と
+@code{\end{foo}}の組が挙げられます。プログラミング言語においても、ブロック
+構造は同類といえます。@code{\begin{ } \end { }} の部分は文法的に決まってい
+るのですから、コンピュータに入れさせるのが筋です。人間は「foo環境を作れ」
+という指示だけ与えれば良いのです。
+
+@menu
+* Structure input with completion::  構造の補完入力
+* Auto-insertion of iterator::  反復子の自動判定挿入
+* Identifier completion::       識別子のバッファ内補完
+@end menu
+
+@node Structure input with completion, Auto-insertion of iterator, Input Aider, Input Aider
+@comment  node-name,  next,  previous,  up
+@section 構造の補完入力
+@cindex 構造の補完入力[こうそうのほかんにゆうりよく]
+@cindex epoi-insert-structure
+
+言語特有の構造入力を補完するのが @kbd{[prefix] C-s}
+(epoi-insert-structure)です。
+
+@table @kbd
+@item [prefix] C-s
+	@dots{} 構造の補完入力 (epoi-insert-structure)
+@end table
+
+するといくつかの構造のうちからどれを入力するかの選択肢が提示されるので、適
+切なものを選び、さらに必要な最低限の問い合わせに答えます。以下の例は、
+La@TeX{}でitemize環境を入れる場合の操作を示しています。
+
+@example
+キー入力: [prefix] C-s
+メニュー: Completion : (b)begin (s)section (m)maketitle (l)large:
+キー入力: b                                 (begin構文の入力を指示)
+メニュー: Begin:
+キー入力: itemize                           (TABキーなどで補完可能)
+入力結果: \begin{itemize}
+
+          \end{itemize}
+@end example
+
+@node Auto-insertion of iterator, Identifier completion, Structure input with completion, Input Aider
+@comment  node-name,  next,  previous,  up
+@section 反復子の自動判別入力
+@cindex 反復子の自動判別入力[はんふくしのしとうはんへつにゆうりよく]
+@cindex 反復子[はんふくし]
+@cindex 箱[はこ]
+@cindex イテレータ[いてれえた]
+@cindex epoi-insert-iterator
+@cindex epoi-intelligent-newline
+
+カーソル位置がその言語特有の「箱」の内部で、その箱が通常特有の反復子を持つ
+ものである場合
+
+@table @kbd
+@item [prefix] C-i
+        @dots{} 反復子の挿入 (epoi-insert-iterator)
+@end table
+
+@noindent
+により自動的にふさわしい反復子を選んで挿入します。たとえば、HTMLの場合
+@code{<ul>}(という箱) の内部では@code{<li>}をいくつか持つことになる。これ
+をふまえて、元のバッファが
+
+@example
+ <ul>
+   <li> あれこれ
+        ふがふが
+   ■
+ </ul>
+@end example
+
+のようになっていた場合(■がカーソル位置)、@kbd{[prefix] C-i} を押すことに
+よりEPOはその場所が@code{<ul>}内部であると判定して、
+
+@example
+ <ul>
+   <li> あれこれ
+        ふがふが
+   <li>
+ </ul>
+@end example
+
+が自動的に挿入されます。また、
+
+@table @kbd
+@item [prefix] C-m
+        @dots{} 反復子の改行つき挿入 (epoi-intelligent-newline)
+@end table
+
+@noindent
+をタイプした場合は現在の行の末尾に改行を追加して、インデント(メジャーモー
+ドに依存)したうえで適切な反復子を挿入します。つまり、
+
+@example
+ <ul>
+   <li> あれこれ
+        ふがふが■
+ </ul>
+@end example
+
+という状態で @kbd{[prefix] C-m} をタイプするとやはり
+
+@example
+ <ul>
+   <li> あれこれ
+        ふがふが
+   <li>
+ </ul>
+@end example
+
+のように挿入されます。
+
+
+@node Identifier completion,  , Auto-insertion of iterator, Input Aider
+@comment  node-name,  next,  previous,  up
+@section 識別子の補完
+@cindex 識別子の補完[しきへつしのほかん]
+@cindex epoi-complete-symbol
+@cindex epoi-complete-function
+
+ソース中でなんらかの参照を行なうべく、(変数・関数・ラベルなどの)識別子を入
+力する場合、その途中まで入力して残りの部分を補完させることができます。Lisp 
+言語を例にしましょう。既に別箇所で foo-copy-word 関数が定義されていると仮
+定します。その場合、``co'' のように単語の途中まで入力して
+
+@table @kbd
+@item [prefix] C-SPC
+        @dots{} ポイント位置の識別子の補完 (epoi-complete-symbol)
+@end table
+
+@noindent
+をタイプすると、``co'' で始まる関数名を候補として表示します。
+
+@example
+(foo-co<@kbd{[prefix] C-SPC}>
+    ↓
+foo-co
+== Matches with ===================================================
+(a)foo-code-detect (b)foo-copy-byte (c)foo-copy-word
+===================================================================
+@end example
+
+のように表示されるのでここでは選択肢の3番目(c)を選びます。
+
+@example
+(foo-copy-word
+@end example
+
+La@TeX{}のラベルに関しても同様に補完することができます。
+
+さて、注意が必要なのはC言語などです。EPOは「関係」の種類を区別します。たと
+えば、変数の参照と関数の参照は区別されます。これから補完するものが、変数の
+参照なのか、関数の参照なのかがはっきりするようにしなければなりません。Lisp
+言語では変数の参照と関数の参照は補完する段階で区別できます。なぜなら、関数
+の参照を補完したい場合は
+
+@example
+(foo■
+@end example
+
+のようにタイプしますが、途中まで打った段階で関数の参照であることを意味する
+開き括弧が既に入力されているからです。然し、C言語の場合は関数の参照を意味
+する開き括弧は関数名の後で入力します。
+
+@example
+foo■
+@end example
+
+のように、fooと打った段階ではその部分に着目すると、あたかも変数の参照のよ
+うに見えてしまいます。この位置で @kbd{[prefix] C-SPC} を押しても、候補とし
+て出てくるのは ``foo'' で始まる変数名になってしまいます。
+
+そんな場合は、C言語系の関数専用の補完キーである
+
+@table @kbd
+@item [prefix] C-f
+        @dots{} ポイント位置の関数名の補完 (epoi-complete-function)
+@end table
+
+@noindent
+を利用して下さい。これは、現在バッファに入力途中の単語の末尾に開き括弧を補っ
+てから epoi-complete-symbol を呼び出します。
+
+@example
+foo<@kbd{[prefix] C-f}>
+  ↓
+foo(
+== Matches with ===================================================
+(a)foo_code_detect (b)foo_copy_byte (c)foo_copy_word
+===================================================================
+@end example
+
+これも同様に選択肢の中から対応するアルファベットを押せばその識別子が挿入さ
+れます。
+
+なお、@kbd{[prefix] C-SPC}、@kbd{[prefix] C-f}いずれの場合も、候補が26個以
+上ある場合は、隣のバッファに一覧が表示されるのみです。この場合は、もう少し
+補完の手がかりとなる文字を追加してからもう一度 @kbd{[prefix] C-SPC}または
+@kbd{[prefix] C-f}を押すようにします。
+
+@node Resolving Relations, Changing elemnts of relation, Input Aider, Top
+@comment  node-name,  next,  previous,  up
+@chapter 関係の解決
+@cindex 関係の解決[かんけいのかいけつ]
+@cindex epor-resolve-relation
+
+文書中に存在する関係の間を行き来することができます。関係には、識別子の定義
+と参照、ファイル参照、外部資源参照、箱、があります。
+
+@menu
+* Resolving file reference::    ファイル参照の解決
+* Resolving box pairs::         箱関係の解決
+@end menu
+
+@node Resolving relation of identifiers, Resolving file reference, Resolving Relations, Resolving Relations
+@comment  node-name,  next,  previous,  up
+
+@section 識別子の定義/参照間ジャンプ
+@cindex 識別子の定義/参照間ジャンプ[しきへつしのていきさんしようかんしやんふ]
+
+ひとつめの関係解決は識別子の定義/参照間ジャンプです。どこかで定義している
+識別子を参照する部分に居る場合、その場から定義箇所にすぐに飛ぶことができま
+す。もっと砕いて言うと、関数やラベルの参照を行なっている箇所で
+
+@table @kbd
+@item [prefix] C-r
+        @dots{} ポイント位置の関係の解決 (epor-resolve-relation)
+@end table
+
+@noindent
+を押すとその定義箇所にジャンプします。定義箇所の検索は、原則として同一ディ
+レクトリツリーに属するファイル全てから行なわれます。
+
+また、定義箇所へのジャンプとは逆に、定義箇所で @kbd{[prefix] C-r} を押すこ
+とにより、その参照箇所へジャンプします。参照箇所は複数あるのであまり便利で
+あるとはいえませんが、続けて @kbd{M-n}や@kbd{M-p}を押すことにより、その次
+の箇所での参照部分を(バッファを跨いで)検索します。
+
+どちら方向のジャンプでも、@kbd{C-x j 3}(デフォルト)を押すと最初にいた位置
+に戻れます。
+
+また、もし参照部分で @kbd{[prefix] C-r} を押して定義箇所を探す場合、可能性
+のある場所でその定義箇所が見付からない場合は今すぐその定義を作成するか聞い
+て来ます。yと答えると定義を自動作成します。これだけでは分かりづらいので例
+をあげましょう。たとえばEmacs-Lispで、ある部分を関数化したくなったとします。
+
+@example
+(defun foo ()
+   (interactive)
+   (save-excursion
+      ほげほげ〜
+      えへへへ〜
+      ;;次の部分を関数化したい
+      うりゃあ〜
+      どりゃ〜
+       :
+      ))
+@end example
+
+そのようなときは、新しい関数を定義する前に、関数の参照をバッファに書いてし
+まいます。
+
+@example
+(defun foo ()
+   (interactive)
+   (save-excursion
+      ほげほげ〜
+      えへへへ〜
+      ;;次の部分を関数化したい
+      (sub-of-foo x y)
+      うりゃあ〜
+      どりゃ〜
+       :
+      ))
+@end example
+
+しかるのちに sub-of-foo にカーソルを合わせて(相手がいなくても)
+@kbd{[prefix] C-r} をタイプします。すると
+
+@example
+No partner found.  Create function-definition now? (y or n)
+@end example
+
+と聞かれるので、yを押すと
+
+@example
+Type [prefix] C-y to insert function-definition template of sub-of-foo
+@end example
+
+と表示され、テンプレートが記憶されます。この状態で後続する「うりゃあ〜ど
+りゃ〜」を @kbd{C-k} などで削除して kill-ring に取り込みます。続いて、新し
+い関数 @code{sub-of-foo} を定義したい場所に移動してから、
+
+@table @kbd
+@item [prefix] C-y
+        @dots{} 識別子定義テンプレート挿入 (epo-yank-structure)
+@end table
+
+@noindent
+をタイプすると
+
+@example
+(defun sub-of-foo ()
+ ""
+)
+@end example
+
+という関数定義の基本形が現れるので、その内部に先ほど取り込んだ「うりゃ〜ど
+りゃ〜」をyankして関数定義は完了します。
+
+プログラミングの設計が終わり、具体的なコーディングをしている段階では、関数
+というものは定義が先に生まれるのではなく、参照したいという必要が先に生まれ
+てから定義が生まれることが多いので epor-resolve-relation を効果的に利用す
+るとよいでしょう。これは、La@TeX{}におけるlabel定義でも同様のことがいえます。
+
+@node Resolving file reference, Resolving box pairs, Resolving Relations, Resolving Relations
+@comment  node-name,  next,  previous,  up
+@section ファイル間参照の解決
+@cindex ファイル間参照の解決[ふあいるかんさんしようのかいけつ]
+
+あるファイルの中に別のファイルをインクルードする、あるいはポインタとして示
+すような表記があった場合、EPOはそれをファイル間参照という関係とみなします。
+元ファイルの中の別ファイルを参照する記述にカーソルを合わせ、やはり
+@kbd{[prefix] C-r} を押すと、指し示しているファイルに移動します。
+
+@node Resolving box pairs,  , Resolving file reference, Resolving Relations
+@comment  node-name,  next,  previous,  up
+@section 箱の端点間ジャンプ
+@cindex 箱の端点間ジャンプ[はこのたんてんかんしやんふ]
+
+対象言語での「箱」の開始行、または終端行にカーソルが位置する場合
+@kbd{[prefix] C-r} を押すと反対側の端点にジャンプします。
+
+
+@node Changing elemnts of relation, Processor Invocation, Resolving Relations, Top
+@comment  node-name,  next,  previous,  up
+@chapter 関係要素の変更
+@cindex 関係要素の変更[かんけいようそのへんこう]
+@cindex epoc-change-relation-elements
+
+「関係」のうち「ファイル参照」、「箱」の位置で
+
+@table @kbd
+@item [prefix] C-c
+        @dots{} 関係要素の変更 (epoc-change-relation-elements)
+@end table
+
+@noindent
+を押すと関係を結びつけているものを変更します。つまり、「ファイル参照」の場
+合は、元のバッファにあるファイル名を指定している部分と、実際のファイル名両
+方を変更します。「箱」の場合は箱の名前を変更します。具体例で示すと、「ファ
+イル参照」の場合はたとえばHTMLで、
+
+@example
+It's <a href="foo.html">foo</a>!
+               ↑
+@end example
+
+の @file{foo.html} の部分で@kbd{[prefix] C-c}を押すと、
+
+@example
+Change `foo.html' to:
+@end example
+
+と新しいファイル名を聞いて来ます。ここで @file{bar.html} と答えると、
+その href="foo.html" という記述自身と、実際のファイル @file{foo.html} の名
+前を変更します(@file{foo.html}が存在しなければファイル名変更は行なわれませ
+ん)。
+
+「箱」の変更は、たとえばLa@TeX{}において、
+
+@example
+\begin{itemize}
+ \item foo
+\end{itemize}
+      ↑
+@end example
+
+の\begin, \endどちらかの行にカーソルを合わせて、@kbd{[prefix] C-c}を押すと
+
+@example
+Change `itemize' to:
+@end example
+
+と聞いて来るので、ここで ``enumerate'' を入力すればバッファ中のitemize環境
+が、enumerate環境に変わります。
+
+@node Processor Invocation, Teaching EPO a new language, Changing elemnts of relation, Top
+@comment  node-name,  next,  previous,  up
+@chapter プロセッサ起動
+@cindex プロセッサ起動[ふろせつさきとう]
+@cindex epop-start-menu
+@cindex epop-jump-to-error
+
+多くの言語では、ソースを記述するだけではなく、それをある処理系(プロセッサ)
+に渡して文法チェックや、成果物への変換を行なう必要があります。たとえばプロ
+グラミング言語では「コンパイル」という操作により実行プログラムを得ます。ま
+たプログラムを実際に走らせてみるという操作も頻繁に行なうでしょう。
+
+La@TeX{}などでは「タイプセット」という操作により見栄えのよい版下の元となるdvi
+ファイルを得たり、それに対してプレヴューアを利用することで出来上がりの吟味
+をしたり、dvi2psなどを利用して実際に最終目的としての紙出力を得たりします。
+
+これらの「ソース」に関連する処理系の呼び出しをEPOが手伝います。
+
+@menu
+* Processor invocation menu::   言語処理系起動メニュー
+* Changing processor for current source::  起動処理系のバッファローカルな変更
+* Jumping to the error position::  エラー発生箇所へのジャンプ
+@end menu
+
+@node Processor invocation menu, Changing processor for current source, Processor Invocation, Processor Invocation
+@comment  node-name,  next,  previous,  up
+@section プロセッサ起動メニュー
+@cindex プロセッサ起動メニュー[ふろせつさきとうめにゆう]
+
+@table @kbd
+@item [prefix] C-t
+        @dots{} プロセッサ起動メニュー
+@end table
+
+@noindent
+をタイプするとその言語に応じたプロセッサ一覧が表示されます。たとえばLa@TeX{}
+の場合は
+
+@example
+Start process: (j)typeset (r)preview (l)printing:
+@end example
+
+@noindent
+というメニューが現れるので@footnote{設定によりメニューは異なる可能性があり
+ます}、そのときに起動したい処理系を選びます。括弧の中に表示されている文字
+を押せば対応する処理系が起動します。
+
+また、たとえばC言語の場合は(デフォルトで)以下のようなメニューが表示されま
+す。
+
+@example
+Start process: (j)Compile (m)Make in toplevel (r)run-it:
+@end example
+
+@noindent
+ここに出ている(m)Make in toplevel というコマンドを選択すると、現在編集対象
+となっているソースを含むプロジェクト全体のトップディレクトリを聞かれます
+
+@example
+Project root dir: ~/work/project1/lib/getuser/
+@end example
+
+分かりやすくいえば、これは、「どのディレクトリでmakeを起動するか」を聞いて
+います。ソースのあるディレクトリではなく上位のディレクトリで起動した方がい
+い場合などがあるので、適宜 toplevel のディレクトリを答えて下さい。一度答え
+ると、そのソースに対するmake起動はそのディレクトリで行なわれるようになりま
+す。もし、この Project root dir を変更したい場合は、@kbd{M-x epo} としてく
+ださい。
+
+@node Changing processor for current source, Jumping to the error position, Processor invocation menu, Processor Invocation
+@comment  node-name,  next,  previous,  up
+@section 起動処理系の変更
+
+ここで説明する機能は、利用する言語のEPO情報定義に、「処理系の変更」に関す
+る情報が含まれている場合にのみ動作します。
+
+@kbd{[prefix] C-t} でプロセッサ起動メニューを出し、どれか一つの処理系を選
+びます。このとき、実際に起動するプログラムはあらかじめEPOに教えられたデフォ
+ルト値に依ります。大抵の場合はそれで構いませんが、現実的には一時的に起動す
+る処理系を切り替えたいことがあります。この場合は、プロセッサ起動メニューの
+呼び出しに @kbd{C-u} (universal-argument) をつけます。
+
+@table @kbd
+@item C-u [prefix] C-t 選択キー
+	@dots{} 処理系を変更して起動
+@end table
+
+たとえば先ほどのLa@TeX{}のプロセスメニュー呼び出しを例にとります。
+@kbd{C-u [prefix] C-t} でメニューを出し、
+
+@example
+Start process: (j)typeset (r)preview (l)printing:
+@end example
+
+の j を選んだとします。通常はここで jlatex が呼ばれますが、@kbd{C-u}付きの
+場合はさらに
+
+@example
+Execute: jlatex foo.tex
+@end example
+
+のように起動すべきコマンドラインの確認を求められます。ここでコマンドライン
+文字列を変更して
+
+@example
+Execute: jlatex bar.tex
+@end example
+
+に変更すると、今後起動するコマンドラインもずっと jlatex bar.tex に変えるか
+どうかを聞いて来ます。
+
+@example
+Use this command also in the future? (y or n)
+@end example
+
+ここで @kbd{y} を押すとバッファの先頭付近に処理系を呼び出すデフォルトのコ
+マンドライン文字列が埋め込まれ、次回からのコマンド起動に利用されます。
+
+@node Jumping to the error position,  , Changing processor for current source, Processor Invocation
+@comment  node-name,  next,  previous,  up
+@section エラー箇所へのジャンプ
+
+プログラミング言語ではコンパイラ、マークアップ言語ではタイプセッタや文法
+チェッカなどを呼び出した後にソース中に含まれるエラーを修正する場合は、
+
+@table @kbd
+@item [prefix] '
+      @dots{} エラー箇所ジャンプ (epop-jump-to-error)
+@end table
+
+@noindent
+をタイプします。これは発生したエラーをバッファ末尾方向から検索し、順次その
+位置にポイントを移動します。それ以上エラー箇所がない場合はなにもしません。
+なお、この機能も利用する言語の処理系固有の、エラーメッセージパターンを正し
+く指定してある場合のみ機能します。EPOがデフォルトで想定している言語処理系
+のエラーメッセージと利用している処理系のものが違う場合にはそのパターンを
+EPOに教える必要があります。これに関しては「新しい言語をEPOに教える」の
+項目(@xref{Teaching EPO a new language})を参照して下さい。
+
+
+@node Teaching EPO a new language, Customizations, Processor Invocation, Top
+@comment  node-name,  next,  previous,  up
+@chapter 新しい言語をEPOに教える
+
+
+EPOが標準でサポートしていない言語でも、いくつかの言語情報を与えることによ
+り、すぐにEPOが利用できるようになります。EPOに教えるべき情報には以下のもの
+があります。
+
+@itemize @bullet
+@item 構造の補完入力に関する情報
+@item 反復子とそれが属する箱に関する情報
+@item 言語に属する全ての「関係」の情報
+@item 関連外部プロセス(処理系)の起動情報
+@item 言語処理系のエラー出力の情報
+@item 言語ソースのファイル名や検索場所などに関する情報
+@end itemize
+
+これらの情報の定義のためには、「alistが何か分かって定義できる」程度のLisp
+の知識と、(正規表現を拡張した)文脈確認正規表現の知識が必要です。とくに後者
+は完璧ではなくとも、どのような型式の値で表現するか程度は理解しておかないと
+自力で作成するのは難しいので続く節を参照して下さい(@xref{CCRE})。
+
+具体的な設定例が @file{epo-example.el} にあるのでそれを参考に新しい言語用
+のものを定義するのが一番近道でしょう。
+
+@menu
+* CCRE::                        文脈確認正規表現
+@end menu
+
+@node CCRE,  , Teaching EPO a new language, Teaching EPO a new language
+@comment  node-name,  next,  previous,  up
+@section 文脈確認正規表現
+@cindex 文脈確認正規表現[ふんみやくかくにんせいきひようけん]
+@cindex CCRE
+
+文脈確認正規表現(以後CCREと表記)は、ある正規表現で見付かったパターンが位置
+する周囲の文脈を調べることによってより正確に検索対象物を厳密に絞れるように
+設計した表現です。たとえばC言語の関数定義は正規表現で指定するととても大変
+です(話すととても長くなるので省略します)。しかしとても簡単な規則で探すこと
+により関数定義の本体を検索することが出来ます。
+
+最初にC言語の識別子となりうるパターン @code{[A-Za-z_][0-9A-Za-z_]*} で検索
+します。そしてその直後が開き丸括弧であるかどうか確認します。ここで、開き括
+弧が来ない場合、そこに書いてあるものは変数です。括弧が来た場合、それは関数
+の参照、もしくは関数の定義です。ここでさらに、その括弧を一個分スキップし、
+さらに(改行を含めた)空白を読み飛ばした位置の文字を調べます。ここに来るもの
+が開き中括弧 @code{@{} である場合、それはその場所での関数定義だといえます。
+
+純粋なEmacsの正規表現では、改行を含む検索に難がある点と、括弧の対応を記述
+できないのでこの文脈確認正規表現が有効になります。
+
+@subsection 文脈確認正規表現の構成
+
+CCREは先頭に正規表現文字列を含む任意長のリストです。
+@example
+(正規表現文字列  文脈確認リスト)
+@end example
+CCRE検索では、まず最初にリスト先頭の正規表現を検索し、マッチした位置につい
+てさらに文脈を確認します。調査する文脈は、以下のものがあります。
+
+@itemize @bullet
+@item box, !box
+
+その位置が特定の箱の内部にあるかどうかを調べます。たとえばLa@TeX{}で、
+enumerate 環境の内部にある @code{\item} なら真、という検索をしたい場合は
+@code{("\\\\item\\>" (box . "enumerate"))} とします。@code{!box} はその箱
+の内部でないときに真となります。
+
+@item 整数
+
+@code{(整数 . "正規表現")}のように指定し、
+整数で指定した行以内に、指定したパターンが見付かれば真。そうでなければ偽と
+なります。負数を指定するとバッファ先頭方向を調べます。
+
+@item before, !before
+
+@code{(before . "正規表現")}
+のように指定し、
+最初にマッチしたものの直前(改行・空白は無視する)が指定したパターンにマッチ
+すれば真、そうでなければ偽となります。!before の場合はマッチしなければ真と
+なります。
+
+@item after, !after
+
+@code{(after . "正規表現")}
+のように指定し、
+最初にマッチしたものの直後(改行・空白は無視する)が指定したパターンにマッチ
+すれば真、そうでなければ偽となります。!after の場合はマッチしなければ真と
+なります。
+
+@item paren, !paren
+
+@code{(paren 数値 "正規表現")}
+のように指定し、
+最初にマッチしたものの位置から「数値」個分だけ括弧を飛ばし、改行・空白を
+飛ばした部分が指定したパターンにマッチすれば
+真、そうでなければ偽となります。!paren の場合はマッチしなければ真となりま
+す。数値に負を指定した場合はバッファ先頭方向に括弧を「数値」個戻ります。
+
+@item upparen, !upparen
+
+@code{(upparen 数値 "正規表現")}
+のように指定し、
+最初にマッチしたものの位置から「数値」個分だけ括弧を外側に出て、改行・空白を
+飛ばした部分が指定したパターンにマッチすれば
+真、そうでなければ偽となります。!upparen の場合はマッチしなければ真となりま
+す。数値に負を指定した場合はバッファ先頭方向に括弧を「数値」個分出ます。
+
+@item exclude
+@code{(exclude 数値 "正規表現")}のように指定し、
+最初の正規表現のグループ番号「数値」にマッチしたものが、「正規表現」に
+マッチした場合は偽となります。識別子を検索して、予約語を除外したいような場
+合に利用します。
+
+@item require
+@code{(require 数値 "正規表現")}のように指定し、
+最初の正規表現のグループ番号「数値」にマッチしたものが、「正規表現」に
+マッチした場合に真となります。excludeの逆です。
+
+@item context
+@code{(context . 文脈確認正規表現)}のように指定し、
+最初にマッチした位置から、再帰的にさらにCCRE検索をします。
+
+@item or
+@code{(or . 文脈確認リストのリスト)}のように指定し、
+複数の文脈確認リストのうちどれかが真を返したときに真を返します。
+
+@item return
+これは文脈確認ではなく、CCRE検索全体のマッチ情報値を変更するときに利用しま
+す。@code{(return)} とすると、直前の文脈確認でおこなわれた正規表現検査の結
+果の値がマッチ情報として設定される。@code{(return 方向 正規表現)}とすると、
+その位置から「正規表現」検索を行った結果がマッチ情報として設定される。「方
+向」は forward または backward のいずれか。
+@end itemize
+
+最初の例で説明したように、Cの関数定義を探す場合に簡単な、
+「直後に丸括弧が来て、その括弧を飛ばした位置に @code{@{} がくるものという
+CCREパターンは次のようになります。
+
+@example
+("[A-Za-z_][0-9A-Za-z_]*" (after . "(") (paren 1 "{"))
+@end example
+
+@node Customizations, Copying, Teaching EPO a new language, Top
+@comment  node-name,  next,  previous,  up
+@chapter カスタマイズ
+@cindex カスタマイズ[かすたまいす]
+
+EPOでの基本編集操作の挙動を変えることのできるユーザ向け変数は以下の通りです。
+括弧内に示したものは既定値です。
+
+@defvar epo-prefix-key
+EPOの機能を呼び出すためのキーバインドのprefixキー (C-c)
+@end defvar
+
+@defvar epo-yank-key
+@kbd{[prefix] C-r} で識別子の定義箇所参照で見付からず、定義のテンプレート
+を自動作成した直後に、そのテンプレートを挿入するための([prefix]直後の)キー
+バインド (C-y)
+@end defvar
+
+@node Copying, Concept Index, Customizations, Top
+@comment  node-name,  next,  previous,  up
+@chapter 本ソフトウェアの取り扱い
+@cindex とりあつかい
+
+@section 利用・配布条件
+
+本ソフトウェアは広瀬雄二 [yuuji@@yatex.org] (以下オリジナル著作者)が著作権
+を保持します。これを利用して発生したいかなる結果に対しても著作者は責任を負
+わないものとします。
+
+本ソフトウェアは対価なくどなたでも自由に利用することができます。
+オリジナルパッケージ (http://www.yatex.org/epo/ 以下で得られるパッケージ)
+と同じアーカイブのままの再配布であれば自由にして頂いて構いません。
+
+ソフトウェアの改変に関しては、原則として自由とします。個人的に利用する場合、
+あるいは知人のみに配布する場合はいかなる改変も許可します。オリジナル状態か
+ら改変したものを第三者に配布する場合(Webページに置く場合も含みます)は、以
+下のどれか一つ以上の条件を満たす場合にのみ許可します。
+
+@itemize @bullet
+@item インストールパスに関する情報を特定のOS固有のものに変えてそのOSのコミュ
+ニティに配布する場合またはOSの一部として配布する場合
+@item 修正部分をオリジナルの著作者に通知し許可を得た場合
+@item 大幅な拡張を加えて違う名前のパッケージとして公表する場合
+@item 個人的な嗜好にもとづく修正のパッチ部分のみを公開する場合
+@item EPO用の編集対象言語情報定義Emacs-Lispファイルを公開する場合
+@item 大幅な拡張を加えて違う名前のパッケージとして公表する場合
+@end itemize
+
+上記いずれの場合においても、パッケージ内に印されたオリジナル著作者による著
+作権表示部分を削除しないこととを条件とします。また、上記の最後以外の場合は
+改変者による修正がどの部分に当たるのかを明記してください。
+
+
+この配布条件の目的は、EPOという名前を持つ本パッケージに不具合が見付かった
+場合の修正完了までの時間をできるだけ短くすることにあります。その目的が損な
+われない再配布形態があり、それが上記の項目に含まれない場合は再考慮しますの
+でオリジナル著作者まで御相談下さい。
+
+@section 質問・バグレポート等の送先
+
+本パッケージを利用する上での質問、バグレポート等はEPO利用者専用メイリング
+リスト epo@@yatex.org にて受けつけます。参加希望する場合は、
+
+@itemize @bullet
+@item 利用しているEmacs
+@item EPOの支援を利用している言語
+@end itemize
+
+を明記して、epo@@yatex.org 宛に自己紹介文をお送り下さい。送信と同時に登録
+が完了します。このML宛に書いたメッセージは検索可能なWebページの一部として
+公開しますのであらかじめご了承下さい。
+
+@node    Concept Index,  , Copying, Top
+@comment node-name, next, previous, up
+@unnumbered 索引
+@printindex cp
+
+@bye
+
+@c Local Variables:
+@c fill-column: 74
+@c fill-prefix: nil
+@c buffer-file-coding-system: junet
+@c End:
+
+Tag table:
+
+End tag table
