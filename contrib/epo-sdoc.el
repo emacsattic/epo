@@ -2,9 +2,9 @@
 ;;; EPO SmartDoc dependent settings
 ;;; (c)2002 by Toshikazu Ando <ando@park.ruru.ne.jp>
 ;;; Created: 2001 Apr.6
-;;; $Lastupdate: Wed Jun 05 23:21:15 2002 $ on inspire.
+;;; $Lastupdate: Sat Nov 16 04:19:40 2002 $ on inspire.
 
-(require 'epo-xml)
+(require 'epo-ant)
 (require 'epo-html)
 ;;[Commentary]
 ;;	
@@ -47,21 +47,22 @@
     ("puresmartdoc")))
 (defvar epo-sdoc-block-table
   '( ("doc" ("xml:lang" . epo-xml-lang))
-     ("head" . 0)
-     ("title" . 0)
-     ("attribute" ("locale") ("name"))
+     ("head" . 0) ("body" . 0)
+     ("title" . 0) ("attribute" ("locale") ("name"))
      ("subtitle" . 0) ("author" ("org") ("email") ("hp"))
      ("org" . 0) ("date" . 0) ("hp" . 0) ("email" . 0) ("abstract" . 0)
      ("header" . 0) ("footer" . 0) ("prologue" . 0)
-     ("body" . 0) ("p" . 0)
+     ("native" ("format" . epo-sdoc-format-alist))
+     ("or" . 0)
      ("part"  ("id" . epo-xml-same-alist) ("title")) ;;; h1
      ("chapter" ("id" . epo-xml-same-alist) ("title")) ;;; h2
      ("section" ("id" . epo-xml-same-alist) ("title")) ;;; h3
      ("subsection" ("id" . epo-xml-same-alist) ("title")) ;;; h4
      ("subsubsection" ("id" . epo-xml-same-alist) ("title")) ;;; h5
-     ("appendix" ("id" . epo-xml-same-alist)
-      ("title"))
+     ("appendix" ("id" . epo-xml-same-alist) ("title"))
+     ("fyi" . 0) ("note" . 0)
      ("ul" . 0) ("ol" . 0) ("dl" . 0) ("li" . 0) ("dt" . 0) ("dd" . 0)
+     ("p" . 0)
      ("table" ("id" . epo-xml-same-alist)
       ("title") ("style" . (("width:95%")))
       ("adapter") ("aparam"))
@@ -75,19 +76,16 @@
      ("a" ("href" . epo-xml-file-name))
      ("cite" ("href" . epo-xml-file-name))
      ("program" ;;("src" . epo-xml-file-name)
-      ("title" . epo-xml-file-name)
+      ("title")
       ("normalizer" . epo-sdoc-normalizer-alist)
       ("javasrcKeyword")
       ("javasrcCount")
       ("javasrcSyntaxHilight" . epo-xml-boolean))
      ("console" ("title")
       ("normalizer" . epo-sdoc-normalizer-alist))
-     ("native" ("format" . epo-sdoc-format-alist))
-     ("or" . 0)
      ("bibliography" . 0) ("bibliopole" . 0) ("book" . 0)
      ("article" ("id" . epo-xml-same-alist))
-     ("author" . 0) ("editor" . 0) ("title" . 0)
-     ("subtitle" . 0) ("edition" . 0) ("publisher" . 0)
+     ("editor" . 0) ("edition" . 0) ("publisher" . 0)
      ("year" . 0) ("month" . 0) ("volume" . 0) ("number" . 0)
      ("journal" ("id" . epo-xml-same-alist)) )
   "Default block type elements")
@@ -99,8 +97,12 @@
     ("tex")))
 (defun epo-sdoc-image-style (arg1 arg2 arg3)
   (if (and epo-html-work (car epo-html-work))
-      (concat "width:" (int-to-string (car epo-html-work))
-	      ";height:" (int-to-string (car (cdr epo-html-work))))
+      (completing-read
+       (concat arg3 " : ")
+       (list
+	(list
+	 (concat "width:" (int-to-string (car epo-html-work))
+		 ";height:" (int-to-string (car (cdr epo-html-work)))))))
     (read-string (concat arg3 " : "))))
 (defvar epo-sdoc-inline-table
   '(("a" ("href" . epo-xml-file-name))
@@ -114,11 +116,14 @@
      ("title" . epo-html-image-alt)
      ("style" . epo-sdoc-image-style))
     ("program" ("src" . epo-xml-file-name)
-     ("title" . epo-xml-file-name)
+     ("title")
      ("normalizer" . epo-sdoc-normalizer-alist)
      ("javasrcKeyword")
      ("javasrcCount")
      ("javasrcSyntaxHilight" . epo-xml-boolean))
+    ("console" ("src" . epo-xml-file-name)
+     ("title")
+     ("normalizer" . epo-sdoc-normalizer-alist))
     ("link" ;; <native format="html4"><link ... /></native>
      ("rel" . (("stylesheet")))
      ("type" . (("text/css")))
@@ -225,21 +230,14 @@
   (if (fboundp 'epocclib-update-file)
       (epocclib-update-file) (message "sdoc posthook done.") ))
 (defvar epo-sdoc-command-line "sdoc" "*SmartDoc command name")
-(defun epo-sdoc-file-name ()
-  (concat "-html4.css.url:"
-	  (read-file-name "css: " "" "" nil "")))
-(defun epo-sdoc-include ()
-  (concat "-html4.css.include:"
-	  (completing-read "include: " '(("embed") ("link")))))
 (defvar epo-sdoc-process-alist
   '((?j (type . compile) (prompt . t)
 	(command "sDoc" epo-sdoc-command-line basename)
-	);(posthook 'epo-sdoc-posthook))
-    (?p (type . compile) (prompt . t)
-	(command "sDoc2" epo-sdoc-command-line
-		 epo-sdoc-file-name epo-sdoc-include basename)
-	);(posthook 'epo-sdoc-posthook))
-    (?r (type . run) (prompt . t)
+	(builtin . "#!"));(posthook 'epo-sdoc-posthook))
+    (?r (type . compile)
+	(command "ant" epo-ant-process "-emacs" "-f"
+		 epo-ant-other-makefile epo-ant-other-target))
+    (?p (type . run) (prompt . t)
 	(command "preview" epo-xml-open-remote
 		 (basename "\\(.*\\)\\.sdoc$" "\\1.html")))
     (?a (type . version)
@@ -248,7 +246,7 @@
 	(command "version" "java" "-version")))
   "*dependent process alists")
 (defvar epo-sdoc-tagjump-alist
-      '(("sDoc" (type . inline)
+      '(("sDoc\\|ant" (type . inline)
 	 (pattern . "^\\(\\S +\\.sdoc\\):\\(%l\\):")
 	 (matchinfo 1 . 2))))
 

@@ -4,7 +4,7 @@
 ;; Author: Toshikazu Ando <ando@park.ruru.ne.jp>
 ;; Maintainer: Toshikazu Ando <ando@park.ruru.ne.jp>
 ;; Created: 2002 May.01
-;; Version: $Lastupdate: Tue May 14 22:52:30 2002 $ on inspire.
+;; Version: $Lastupdate: Mon Aug 05 11:44:52 2002 $ on inspire.
 ;; URL : http://park.ruru.ne.jp/ando/work/who/epojava/
 ;; Keywords: epo, Zope
 ;; user setting.
@@ -57,9 +57,9 @@
   (interactive)
   (let ((list auto-mode-alist) (buff) (mode 'html-mode))
     (while list
-      (setq buf (car list))
-      (if (string-match (car buf) "index.html")
-	  (progn (setq mode (cdr buf))
+      (setq buff (car list))
+      (if (string-match (car buff) "index.html")
+	  (progn (setq mode (cdr buff))
 		 (setq list nil))
 	(setq list (cdr list))))
     (if (string= (symbol-name 'epo-zope-mode) (symbol-name mode))

@@ -2,7 +2,7 @@
 ;;; EPO XHTML dependent settings
 ;;; (c) 2002 by Toshikazu Ando <ando@park.ruru.ne.jp>
 ;;; Created: 2002 Mar 16
-;;; $Lastupdate: Sat Apr 06 17:57:55 2002 $ on inspire.
+;;; $Lastupdate: Sun Oct 20 00:04:22 2002 $ on inspire.
 
 (require 'epo-xml)
 (require 'epo-html)
@@ -70,36 +70,36 @@
        epo-xhtml-block-table))
 
 (defvar epo-xhtml-iteration-alist
-  '((?o (type . ordered-list)
+  '((?a (type . ordered-list)
 	(opener . ((pattern "<ol\\>" (!before . comment-start))))
 	(closer . ((pattern "</ol>" (!before . comment-start))))
-	(iterator . ((indent "<li>" cursor "</li>"))))
-    (?u (type . unordered-list)
+	(iterator . (("<li>" indent cursor "</li>"))))
+    (?b (type . unordered-list)
 	(opener . ((pattern "<ul\\>" (!before . comment-start))))
 	(closer . ((pattern "</ul>" (!before . comment-start))))
-	(iterator . ((indent "<li>" cursor "</li>"))))
-    (?d (type . definition-list)
+	(iterator . (("<li>" indent cursor "</li>"))))
+    (?c (type . definition-list)
 	(opener . ((pattern "<dl\\>" (!before . comment-start))))
 	(closer . ((pattern "</dl>" (!before . comment-start))))
 	;;(iterator . ("<dt>" "<dd>"))
-	(iterator . ((indent "<dt>" cursor "</dt>\n" indent "<dd></dd>"))))
-    (?s (type . simple-table)
+	(iterator . (("<dt>" indent cursor "</dt>\n" indent "<dd></dd>"))))
+    (?d (type . simple-table)
 	(opener . ((pattern "<table\\>" (!before . comment-start))))
 	(closer . ((pattern "</table>" (!before . comment-start))))
 	(iterator . (("<tr>\n" indent "<td>" cursor 
 		      "</td>\n" indent "</tr>" indent))))
-    (?t (type . table)
+    (?e (type . table)
 	(opener . ((pattern "<table\\>" (!before . comment-start))))
 	(closer . ((pattern "</table>" (!before . comment-start))))
 	(iterator . (("<thead>" ("<tr>" ("<th>")))
 		     ("<tbody>" ("<tr>" ("<td>" repeat) repeat))
 		     ;("<tfoot>" ("<tr>" ("<td>"))) ;unnecessary in most case
 		     )))
-    (?r (type . table-row)
+    (?f (type . table-row)
 	(opener . ((pattern "<tr\\>" (!before . comment-start))))
 	(closer . ((pattern "</tr>\\|</tbody>\\|<tr>\\|</table>"
 		   (!before . comment-start))))
-	(iterator . ((indent "<td>" cursor "</td>"))))  ))
+	(iterator . (("<td>" indent cursor "</td>"))))  ))
 
 (defvar epo-xhtml-relation-alist epo-xml-relation-alist)
 

@@ -2,7 +2,7 @@
 ;;; EPO Make dependent settings
 ;;; (c) 2002 by Toshikazu Ando <ando@park.ruru.ne.jp>
 ;;; Created: 2002 Apr 20
-;;; $Lastupdate: Wed May 01 10:13:36 2002 $ on inspire.
+;;; $Lastupdate: Mon Dec 16 20:29:53 2002 $ on inspire.
 
 ;;[Commentary]
 ;;	
@@ -17,7 +17,7 @@
     (save-excursion
       (goto-char (point-min))
       (while (re-search-forward
-	      "^\\([-\\/${}._A-Za-z0-9]+\\):" nil t)
+	      "^\\([-\\/${}._A-Za-z0-9]+\\)\\s *:" nil t)
 	(setq word (buffer-substring (match-beginning 1) (match-end 1)))
 	(if (not (assoc word word-alist))
 	    (setq word-alist (cons (list word) word-alist)))))

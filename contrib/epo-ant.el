@@ -2,7 +2,7 @@
 ;;; EPO Ant dependent settings
 ;;; (c) 2001-2002 by Toshikazu Ando <ando@park.ruru.ne.jp>
 ;;; Created: 2001 Aug 11
-;;; $Lastupdate: Tue Jun 04 20:53:04 2002 $ on inspire.
+;;; $Lastupdate: Mon Aug 05 19:00:09 2002 $ on inspire.
 
 (require 'epo-xml)
 ;;[Commentary]
@@ -15,6 +15,45 @@
 ;; Variables for Input Aider(EPOI)
 ;;;
 
+;;;
+;;;
+;;;
+(defvar epo-ant-other-makefile-value
+  (if (getenv "ANT_HOME") "build.xml" "Makefile")
+  "*jakarta-ant default xml filename")
+
+(defun epo-ant-other-target ()
+  "ant target project complet"
+  (save-excursion
+    (set-buffer (find-file-noselect epo-ant-other-makefile-value))
+    (epo-ant-target)))
+
+(defun epo-ant-other-makefile ()
+  "find file for make file"
+  (let ((pos 0) (file (file-name-nondirectory epo-ant-other-makefile-value))
+	(dir (file-name-directory epo-ant-other-makefile-value)) (name))
+    (catch 'epo-ant-other-makefile-tag
+      (while (< pos 20) ;; 20 is ok??
+	(setq name (expand-file-name (concat dir file)))
+	(if (file-exists-p name)
+	    (progn
+	      (setq epo-ant-other-makefile-value name)
+	      (throw 'epo-ant-other-makefile-tag t)))
+	(setq dir (concat dir "../"))
+	(setq pos (+ 1 pos)))))
+  (setq
+   epo-ant-other-makefile-value
+   (expand-file-name
+    (read-file-name
+     (concat "file("
+	     (file-name-nondirectory epo-ant-other-makefile-value) "): ")
+     (file-name-directory epo-ant-other-makefile-value)
+     epo-ant-other-makefile-value t
+     (file-name-nondirectory epo-ant-other-makefile-value)))))
+
+;;;
+;;;
+;;;
 (defvar epo-ant-process
   (concat (getenv "ANT_HOME") (if epo-xml-dos "\\bin\\ant.bat" "/bin/ant"))
   "*jakarta-ant execute file")
@@ -25,7 +64,7 @@
     (save-excursion
       (goto-char (point-min))
       (while (re-search-forward
-	      "<target\\s +name\\s *=\\s *\"\\(\\w+\\)\"" nil t)
+	      "<target\\s +name\\s *=\\s *\"\\([-_A-Za-z0-9]+\\)\"" nil t)
 	(setq word (buffer-substring (match-beginning 1) (match-end 1)))
 	(if (not (assoc word word-alist))
 	    (setq word-alist (cons (list word) word-alist)))))
@@ -47,7 +86,6 @@
    epo-xml-basic-alist))
 
 (defvar epo-ant-on '(("on") ("off")))
-(defvar epo-ant-local '(("us") ("ja")))
 (defvar epo-ant-formatter '(("xml") ("plain") ("brief")))
 (defvar epo-ant-format '(("frames") ("noframes")))
 
@@ -59,12 +97,11 @@
      ("classpathref")
      ("dir" . epo-xml-file-name))
     ("javadoc"
-     ("local" . epo-ant-local)
-     ("encoding" . epo-xml-encoding)
-     ("decoding" . epo-xml-encoding)
-     ("sourcepath" . epo-xml-file-name)
      ("package")
-     ("destdir" . epo-xml-file-name))
+     ("sourcepath" . epo-xml-file-name)
+     ("destdir" . epo-xml-file-name)
+     ("locale" . epo-xml-lang)
+     ("encoding" . epo-xml-encoding))
     ("javac"
      ("srcdir" . epo-xml-file-name)
      ("destdir" . epo-xml-file-name)

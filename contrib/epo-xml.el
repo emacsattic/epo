@@ -2,7 +2,7 @@
 ;;; EPO XML dependent settings
 ;;; (c) 2001-2002 by Toshikazu Ando <ando@park.ruru.ne.jp>
 ;;; Created: 2001 Aug 11
-;;; $Lastupdate: Tue May 14 22:52:49 2002 $ on inspire.
+;;; $Lastupdate: Sat Jul 13 11:05:38 2002 $ on inspire.
 
 ;;[Commentary]
 ;;	
@@ -169,7 +169,8 @@
 (defvar epo-xml-dos (memq system-type '(ms-dos windows-nt OS/2)))
 (defvar epo-xml-encoding
   '(("us-ascii") ("en-us") ("ASCII")
-    ("EUCJIS") ("SJIS") ("Shift_JIS") ("ISO-8859-1")
+    ("EUCJIS") ("EUC-JIS") ("EUC-JP")
+    ("SJIS") ("Shift_JIS") ("ISO-8859-1")
     ("ISO2022JP") ("JIS0201") ("JIS0208") ("JIS0212") ("MS932")
     ("Windows-31J") ("UTF-8") ("UTF-16")
     ("UnicodeLittle") ("UTF-16BE") ("UTF-16LE") ("Big5") ("GB2312")))
