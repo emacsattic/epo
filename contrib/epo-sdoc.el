@@ -2,7 +2,7 @@
 ;;; EPO SmartDoc dependent settings
 ;;; (c)2002 by Toshikazu Ando <ando@park.ruru.ne.jp>
 ;;; Created: 2001 Apr.6
-;;; $Lastupdate: Mon May 06 15:12:32 2002 $ on inspire.
+;;; $Lastupdate: Wed Jun 05 23:21:15 2002 $ on inspire.
 
 (require 'epo-xml)
 (require 'epo-html)
@@ -34,7 +34,7 @@
 	 (argsep " " "\"" "=" " " "\"" "")
 	 (mustmatch . nil) (arg-reader . nil))
      (?n (type . ret)
-	(structure "<br />" indent cursor)
+	(structure "<p />" indent cursor)
 	(mustmatch . t)))
    (list (car epo-xml-basic-alist))))
 
@@ -54,21 +54,16 @@
      ("org" . 0) ("date" . 0) ("hp" . 0) ("email" . 0) ("abstract" . 0)
      ("header" . 0) ("footer" . 0) ("prologue" . 0)
      ("body" . 0) ("p" . 0)
-     ("part"  ("id" . epo-xml-same-alist)
-      ("title" . epo-xml-same-alist)) ;;; h1
-     ("chapter" ("id" . epo-xml-same-alist)
-      ("title" . epo-xml-same-alist)) ;;; h2
-     ("section" ("id" . epo-xml-same-alist)
-      ("title" . epo-xml-same-alist)) ;;; h3
-     ("subsection" ("id" . epo-xml-same-alist)
-      ("title" . epo-xml-same-alist)) ;;; h4
-     ("subsubsection" ("id" . epo-xml-same-alist)
-      ("title" . epo-xml-same-alist)) ;;; h5
+     ("part"  ("id" . epo-xml-same-alist) ("title")) ;;; h1
+     ("chapter" ("id" . epo-xml-same-alist) ("title")) ;;; h2
+     ("section" ("id" . epo-xml-same-alist) ("title")) ;;; h3
+     ("subsection" ("id" . epo-xml-same-alist) ("title")) ;;; h4
+     ("subsubsection" ("id" . epo-xml-same-alist) ("title")) ;;; h5
      ("appendix" ("id" . epo-xml-same-alist)
-      ("title" . epo-xml-same-alist))
+      ("title"))
      ("ul" . 0) ("ol" . 0) ("dl" . 0) ("li" . 0) ("dt" . 0) ("dd" . 0)
      ("table" ("id" . epo-xml-same-alist)
-      ("title" . epo-xml-same-alist) ("style" . (("width:95%")))
+      ("title") ("style" . (("width:95%")))
       ("adapter") ("aparam"))
      ("thead" . 0) ("tfoot" . 0) ("tbody" ("src" . epo-xml-file-name))
      ("tr" . 0)
@@ -85,7 +80,7 @@
       ("javasrcKeyword")
       ("javasrcCount")
       ("javasrcSyntaxHilight" . epo-xml-boolean))
-     ("console" ("title" . epo-xml-same-alist)
+     ("console" ("title")
       ("normalizer" . epo-sdoc-normalizer-alist))
      ("native" ("format" . epo-sdoc-format-alist))
      ("or" . 0)
@@ -97,7 +92,7 @@
      ("journal" ("id" . epo-xml-same-alist)) )
   "Default block type elements")
 
-(defun epo-sdoc-normalizer-alist
+(defvar epo-sdoc-normalizer-alist
   '(("none") ("natural") ("naturallabel") ("csv") ("image") ("href")
     ("program") ("console") ("line") ("regex")
     ("javasrc") ("xmlsrc")

@@ -2,7 +2,7 @@
 ;;; EPO XML dependent settings
 ;;; (c) 2001-2002 by Toshikazu Ando <ando@park.ruru.ne.jp>
 ;;; Created: 2001 Aug 11
-;;; $Lastupdate: Tue May 14 00:22:53 2002 $ on inspire.
+;;; $Lastupdate: Tue May 14 22:52:49 2002 $ on inspire.
 
 ;;[Commentary]
 ;;	
@@ -52,9 +52,9 @@
 (defun epo-xml-select-file ()
   "seach and select epo-mode file"
   (let ((ans (epo-xml-select-file-second)))
-    (if (and (boundp 'epo-Z-default-host)
+    (if (and (boundp 'epo-zope-default-host)
 	     buffer-file-name
-	     (string-match (concat "@" epo-Z-default-host ":/")
+	     (string-match (concat "@" epo-zope-default-host ":/")
 			   (buffer-file-name))
 	     (or (string= "xhtml" (symbol-name ans))
 		 (string= "xml" (symbol-name ans))))

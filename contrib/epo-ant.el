@@ -2,7 +2,7 @@
 ;;; EPO Ant dependent settings
 ;;; (c) 2001-2002 by Toshikazu Ando <ando@park.ruru.ne.jp>
 ;;; Created: 2001 Aug 11
-;;; $Lastupdate: Thu Apr 11 22:09:43 2002 $ on inspire.
+;;; $Lastupdate: Tue Jun 04 20:53:04 2002 $ on inspire.
 
 (require 'epo-xml)
 ;;[Commentary]
@@ -48,6 +48,8 @@
 
 (defvar epo-ant-on '(("on") ("off")))
 (defvar epo-ant-local '(("us") ("ja")))
+(defvar epo-ant-formatter '(("xml") ("plain") ("brief")))
+(defvar epo-ant-format '(("frames") ("noframes")))
 
 (defvar epo-ant-common-table
   '(("java"
@@ -145,7 +147,10 @@
      ("excludes") ("excludesfile" . epo-xml-file-name)
      ("defaultexcludes" . epo-xml-yes))
     ("touch" ("file" . epo-xml-file-name) ("millis") ("datetime"))
-    ("tstamp" ("property") ("pattern")))
+    ("tstamp" ("property") ("pattern"))
+    ("test" ("name") ("fork" . epo-xml-yes))
+    ("batchtest" ("fork" . epo-xml-yes)
+     ("todir" . epo-xml-file-name)) )
   "epo-xml common set")
 
 (defvar epo-ant-block-table
@@ -154,8 +159,11 @@
       ("basedir" . epo-xml-file-name))
      ("target" ("name") ("depends" . epo-ant-target))
      ("classpath" . 0)
-     ("juint" ("printsummary" . epo-ant-on))
-     ;;
+     ("patternset" . 0)
+     ("junit" ("printsummary" . epo-ant-on)
+      ("fork" . epo-xml-yes))
+     ("junitreport" ("tofile" . epo-xml-file-name)
+      ("todir" . epo-xml-file-name))
      ("dependset" . 0)
      ("parallel" . 0)
      ("pathconvert" ("targetos") ("property"))
@@ -173,6 +181,8 @@
      ("mkdir" ("dir" . epo-xml-file-name))
      ("pathelement" ("location") ("path" . epo-xml-file-name))
      ("include" ("name" . epo-xml-file-name))
+     ("includesfile" ("name" . epo-xml-file-name))
+     ("exclude" ("name" . epo-xml-file-name))
      ("arg" ("value") ("line")
       ("file" . epo-xml-file-name) ("path" . epo-xml-file-name))
      ("jvmarg" ("value") ("line")
@@ -182,8 +192,11 @@
      ("sysproperty" ("key") ("value")
       ("file" . epo-xml-file-name) ("path" . epo-xml-file-name))
      ("taskdef" ("name") ("classname"))
-     ("test" ("name"))
-     ("batchtest" . 0)
+     ("formatter" ("type" . epo-ant-formatter)
+      ("classname") ("extension") ("usefile"))
+     ("report" ("format" . epo-ant-format)
+      ("todir" . epo-xml-file-name)
+      ("styledir" . epo-xml-file-name))
      ;;
      ("antstructure" ("output"))
      ("filter" ("token") ("value") ("filtersfile"))
