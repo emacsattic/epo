@@ -4,7 +4,7 @@
 ;; Author: Toshikazu Ando <ando@park.ruru.ne.jp>
 ;; Maintainer: Toshikazu Ando <ando@park.ruru.ne.jp>
 ;; Created: 2002 May.01
-;; Version: $Lastupdate: Mon Aug 05 11:44:52 2002 $ on inspire.
+;; Version: $Lastupdate: Wed Jan 15 01:12:00 2003 $ on inspire.
 ;; URL : http://park.ruru.ne.jp/ando/work/who/epojava/
 ;; Keywords: epo, Zope
 ;; user setting.
@@ -41,8 +41,8 @@
   (setq epo-zope-default-filename
 	(if (string= "21" epo-zope-default-port)
 	    (concat "/" epo-zope-default-account "@" epo-zope-default-host ":/")
-	  (concat "/" epo-zope-default-account "@" epo-zope-default-host ":"
-		epo-zope-default-port "/")))
+	  (concat "/" epo-zope-default-account "@" epo-zope-default-host " "
+		epo-zope-default-port ":/")))
   (setq auto-mode-alist
 	(delete (assoc (concat "^" epo-zope-default-filename)
 		       auto-mode-alist) auto-mode-alist))
