@@ -2,9 +2,9 @@
 ;;; Editing Process Organizer
 ;;; epo.el rev. 1.4f
 ;;; (c)1999-2002 by HIROSE Yuuji [yuuji@ae.keio.ac.jp]
-;;; Last modified Fri Sep 27 18:33:00 2002 on firestorm
+;;; Last modified Sun Jan 12 21:52:56 2003 on firestorm
 
-(defconst epo-revision-number "1.4e")
+(defconst epo-revision-number "1.4f")
 ;;	
 ;;	(個人的メモ)
 ;;	  -- project-root 以下の全ファイルを開く → シンボル収集のため
