@@ -2,7 +2,7 @@
 ;;; Editing Process Organizer
 ;;; epo.el rev. 1.4e
 ;;; (c)1999-2002 by HIROSE Yuuji [yuuji@ae.keio.ac.jp]
-;;; Last modified Sun Apr  7 12:03:57 2002 on firestorm
+;;; Last modified Mon Jun  3 13:38:52 2002 on balius
 
 (defconst epo-revision-number "1.4e")
 ;;	
@@ -52,6 +52,14 @@
 ;;	* 開始 / 終了
 ;;	* 他文書参照
 ;;	* 非文書データ参照(プロセス起動等)
+;;	
+;;[./.eporc の書式]	
+;;
+;;	作業ディレクトリの .eporc ファイルに、その場所でのEPO関連機能起
+;;	動に必要な情報を与えることができる。書式は以下のとおり。
+;;	
+;;	モジュール-タグ:
+;;	
 ;;	
 ;;[Symbol Naming Rules]
 ;;	

@@ -2,7 +2,7 @@
 ;;; EPO Process Handler
 ;;; (c)1999-2002 by HIROSE Yuuji [yuuji@ae.keio.ac.jp]
 ;;; $Id$
-;;; Last modified Sun Apr 21 00:03:18 2002 on balius
+;;; Last modified Mon Jun  3 13:35:00 2002 on balius
 
 ;;[Commentary]
 ;;	
@@ -67,6 +67,11 @@
 ;;	<builtin-prefix> := ソース埋め込みコマンドの指定用prefix
 ;;	<makefile-pattern> := make的プロジェクトメーカプログラムのジョブ定義
 ;;			      ファイルのパターン
+;;
+;;	
+;;	
+
+
 
 (defvar epop:process-alists nil
   "Process handler list")
@@ -280,6 +285,12 @@
 	       lastino ino
 	       dir (expand-file-name ".." dir)))
        (throw 'stop "/")))))
+
+(defun epop*do-eporc ()
+)
+(defun epop*read-eporc ()
+)
+
 
 (defun epop*start-processor (processor-alist &optional ask)
   "Start text processor on current file.

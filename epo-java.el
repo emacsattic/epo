@@ -45,10 +45,10 @@
     ("import")      ;;; 先頭／使用 package 指定
     ("package")     ;;; 先頭／自 package 指定
     ("class")       ;;; class指定／先頭
-    ("extend")      ;;; class 指定／継承
+    ("extends")     ;;; class 指定／継承
     ("implements")  ;;; class指定／実装
     ("interface")   ;;; class指定／実装指定
-    ("trows")       ;;; class指定／受手がcatchしなければならないException
+    ("throws")      ;;; class指定／受手がcatchしなければならないException
     ("abstract")    ;;; 修飾子／スーパclassまたはメソッド指定
     ("final")       ;;; 修飾子／継承／オーバライド禁止指定
     ("native")      ;;; 修飾子／VM / .dll (ネイティブメソッド)呼び出し指定
@@ -71,7 +71,7 @@
     ("switch")      ;;; 本文／switch ／選択
     ("while")       ;;; 本文／while ／繰り返し
     ("this")        ;;; 本文／自ポインタ(参照)指定
-    ("trow")        ;;; 本文／try-catch
+    ("throw")       ;;; 本文／try-catch
     ("try")         ;;; 本文／try-catch
     ("break")       ;;; 本文／繰り返し中断
     ("case")        ;;; 本文／swich-case-default
@@ -87,7 +87,8 @@
     ("int")         ;;; 本文／整数
     ("long")        ;;; 本文／整数その２
     ("short")       ;;; 本文／整数その３
-    ("void") ))     ;;; 本文／戻り値なし
+    ("void")        ;;; 本文／戻り値なし
+    ("assert")))    ;;; Simple Assertion Facility
 
 (defvar epo-java-freq-funcs
   '(("System.out.print")
