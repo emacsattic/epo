@@ -1,7 +1,7 @@
 ;;; -*- Emacs-Lisp -*-
 ;;; EPO Emacs-Lisp dependent settings
 ;;; (c)2000-2002 by HIROSE Yuuji [yuuji@ae.keio.ac.jp]
-;;; Last modified Mon Feb  4 13:12:06 2002 on firestorm
+;;; Last modified Wed Apr  2 12:35:12 2003 on firestorm
 
 ;;[Commentary]
 ;;	
@@ -27,7 +27,7 @@
 	(idpattern . "[^ \t()'\"\n\r#]+")
 	(table . (epo-elisp-complete-vars . boundp))
 	(relation
-	 (defvars (pattern "(def\\(var\\|custom\\)\\s +\\(%i\\)\\>")
+	 (defvars (pattern "(def\\(var\\|custom\\|const\\)\\s +\\(%i\\)\\>")
 	   (group . 2) (structure . (epo-elisp-structure-alist . ?v)))
 	 (varref
 	  (pattern "\\(%i\\)"
