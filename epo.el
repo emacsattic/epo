@@ -1,11 +1,15 @@
 ;;; -*- Emacs-Lisp -*-
 ;;; Editing Process Organizer
-;;; epo.el rev. 1.4f
-;;; (c)1999-2002 by HIROSE Yuuji [yuuji@ae.keio.ac.jp]
-;;; Last modified Sun Jan 12 21:52:56 2003 on firestorm
+;;; epo.el rev. 1.4h
+;;; (c)1999-2003 by HIROSE Yuuji [yuuji@ae.keio.ac.jp]
+;;; Last modified Sun Mar 30 16:46:13 2003 on firestorm
 
-(defconst epo-revision-number "1.4f")
+(defconst epo-revision-number "1.4h")
 ;;	
+;;	What's new
+;;	  -- [prefix] C-r での位置記憶レジスタを 1〜9 の9個にした。
+;;	     何回も [prefix] C-r したときは1→9にローテート
+;;
 ;;	(個人的メモ)
 ;;	  -- project-root 以下の全ファイルを開く → シンボル収集のため
 ;;	  -- project-root 以下の関連ファイルを探して開く → 〃
@@ -83,8 +87,11 @@
 (defvar epo-box-indent-depth 1
   "*Indentation depth relative to iterator-box opener.")
 
-(defvar epo-last-seen-position-register ?3
-  "*Register char to save last seen point.")
+(defvar epo-last-seen-position-registers "123456789"
+  "*String of register characters to save last seen point.
+Most recently seen position is saved in the 0-th of this string.
+When the seen position is saved in to 0-th of the string,
+previous content in 0-th entry is moved to 1st, 1st to 2nd, and so on.")
 
 (defvar epo-select-frame (fboundp 'select-frame)
   "Non-nil selects frame if target buffer is in other frame.")
@@ -274,21 +281,47 @@ Each element looks like (REGEXP . LANGNAME).")
     (error "Quit from epo-mode!"))))
 
 (defun epo*store-position-in-register (&optional point buffer)
-  "Store current point-marker in register (default ?3)."
-  (if epo-last-seen-position-register
-      (progn
-	(or (markerp (get-register epo-last-seen-position-register))
-	    (set-register epo-last-seen-position-register (make-marker)))
-	(set-marker (get-register epo-last-seen-position-register)
+  "Store current point-marker in register (default ?1)."
+  (if epo-last-seen-position-registers
+      (let*((regs epo-last-seen-position-registers)
+	    (n (1- (length regs)))
+	    alive m mp mb
+	    (top (aref regs 0)))
+	(while (> n 0)			;shift regster positions
+	  (if (and (setq m (get-register (aref regs (1- n))))
+		   (setq mp (marker-position m))
+		   (setq mb (marker-buffer m))
+		   (epo*buffer-live-p mb))
+	      (progn
+		(set-marker (get-register (aref regs n)) mp mb)
+		(setq alive (cons (aref regs n) alive)))
+	    (set-marker (get-register (aref regs n)) nil))
+	  (setq n (1- n)))
+	(or (markerp (get-register top))
+	    (set-register top (make-marker)))
+	(set-marker (get-register top)
 		    (or point (point)) buffer)
-	(message "Type `%s %c' to return to last position."
+	(message "Type `%s %c' to return to last position(marks in [%c%s])"
 		 (epo*function-key-description
 		  (cond
 		   ((fboundp 'jump-to-register-compatibility-binding)
 		    'jump-to-register-compatibility-binding)
 		   ((fboundp 'jump-to-register) 'jump-to-register)
 		   (t 'register-to-point)))
-		 epo-last-seen-position-register))))
+		 top
+		 (aref epo-last-seen-position-registers 0)
+		 (mapconcat 'char-to-string alive "")))))
+
+(defun epo*reset-position-registers ()
+  "Reset all registers in epo*store-position-in-register."
+  (interactive)				; for debug use
+  (let ((n (length epo-last-seen-position-registers))
+	(regs epo-last-seen-position-registers))
+    (while (>= (setq n (1- n)) 0)
+      (if (markerp (aref regs n))
+	  (set-marker aref regs n) nil)
+      (set-register (aref regs n) (make-marker)))))
+(epo*reset-position-registers)
 
 (defvar epo-structure-yank-register nil
   "To save structure template.
