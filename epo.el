@@ -1,8 +1,8 @@
 ;;; -*- Emacs-Lisp -*-
 ;;; Editing Process Organizer
-;;; epo.el rev. 1.4e
+;;; epo.el rev. 1.4f
 ;;; (c)1999-2002 by HIROSE Yuuji [yuuji@ae.keio.ac.jp]
-;;; Last modified Mon Jun  3 13:38:52 2002 on balius
+;;; Last modified Fri Sep 27 18:33:00 2002 on firestorm
 
 (defconst epo-revision-number "1.4e")
 ;;	

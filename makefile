@@ -48,7 +48,7 @@ LISPMAIN = epo.el epolib.el epoi.el epoc.el epop.el epor.el
 # epom.el
 LISPEXTRA= epo-c.el epo-elisp.el epo-perl.el epo-ruby.el epo-java.el \
 	   epo-tex.el epo-html.el contrib/*.el
-DOCS	= ${DOCSRC} ${DOCOBJ} ${NEWS} COPYING
+DOCS	= ${DOCSRC} ${DOCOBJ} ${NEWS} COPYING install
 NEWS	= epo.new
 DOCSRC	= docs/epoj.texi docs/dir docs/epo.ref
 DOCOBJ	= docs/epoj

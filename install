@@ -1,0 +1,24 @@
+# (This file is encoded with MS-KANJI(Shift JIS) coding system)
+
+Installation of EPO / EPOのインストール
+***************************************
+
+Put these expressions into your ~/.emacs
+まず ~/.emacsに下の2項目を加えます。
+
+      (autoload 'epo "epo" "Editing Process Organizer" t)
+
+Then, add certain path name where you put files of EPO to your
+load-path.  If you want to put them in `~/src/emacs/epo', write
+次にEPOの emacs-lisp ファイル群を置くディレクトリを load-path に加えます。
+たとえば、`~/src/emacs/epo'に置くのであれば、
+
+     (setq load-path (cons "~/src/emacs/epo" load-path))
+
+in your ~/.emacs.
+などとします。
+
+
+How to activate EPO / EPOの起動方法
+***********************************
+

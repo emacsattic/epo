@@ -2,7 +2,7 @@
 ;;; General Library Functions for EPO
 ;;; (c)1999-2002 HIROSE, Yuuji [yuuji@ae.keio.ac.jp]
 ;;; $Id$
-;;; Last modified Tue Feb  5 00:58:31 2002 on balius
+;;; Last modified Sat Oct 19 12:41:13 2002 on firestorm
 
 (defvar epo*debug (string= (user-login-name) "yuuji"))
 (defvar epo-quiet nil)
@@ -1257,7 +1257,7 @@ least significant 16 bits."
 (defun epo*time< (t1 t2)
   "Return t if the time T1 is older than time T2.
 Time is in the form returned by epo*current-time."
-  (or (and (= (car t1) (car t2)) (< (nth 1 t1) (nth 1 t2)))
+  (or (and (equal (car t1) (car t2)) (< (nth 1 t1) (nth 1 t2)))
       (< (car t1) (car t2))))
 
 ;;;

@@ -2,7 +2,7 @@
 ;;; EPO Process Handler
 ;;; (c)1999-2002 by HIROSE Yuuji [yuuji@ae.keio.ac.jp]
 ;;; $Id$
-;;; Last modified Mon Jun  3 13:35:00 2002 on balius
+;;; Last modified Sat Oct 19 02:09:25 2002 on firestorm
 
 ;;[Commentary]
 ;;	
@@ -303,6 +303,7 @@ then next two list element is assumed as SearchRegexp and ReplaceRegexp."
   (let*((clist (epop*processor-info-get 'command processor-alist))
 	(type  (epop*processor-info-get 'type processor-alist))
 	(prompt (epop*processor-info-get 'prompt processor-alist))
+	(execdir  (epop*processor-info-get 'execdir processor-alist))
 	(builtin (epop*processor-info-get 'builtin processor-alist))
 	(makefile (epop*processor-info-get 'makefile processor-alist))
 	(prehook  (epop*processor-info-get 'prehook processor-alist))
@@ -390,14 +391,14 @@ then next two list element is assumed as SearchRegexp and ReplaceRegexp."
       (prompt
        (read-string "Execute: " arg))
       (ask
-       (setq newarg (read-string "eeeExecute: " arg))
+       (setq newarg (read-string "Execute: " arg))
        (if (and builtin
 		(not (string= newarg arg))
 		(y-or-n-p "Use this command also in the future? "))
 	   (epop*update-builtin builtin newarg))
        newarg)
       (t arg))
-     epo-project-root-dir)
+     (or execdir epo-project-root-dir))
     (run-hooks posthook)))
 
 (defun epop*kill-processor (processor-alist)
